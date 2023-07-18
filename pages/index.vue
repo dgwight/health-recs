@@ -1,21 +1,19 @@
 <script>
-  import { first } from 'lodash'
+  import { first, last } from 'lodash'
   import { getRecommendation, getNameMappings } from '../api/index'
-
-  const clinics = [{
-    value: 'seattle-grace',
-    text: 'Seattle Grace Clinic (QA)'
-  }, {
-    value: 'sacred-heart',
-    text: 'Sacred Heart'
-  }]
 
   export default {
     name: 'IndexPage',
     data () {
       return {
-        clinic: first(clinics),
-        clinics: clinics,
+        clinic: 'seattle-grace',
+        clinics: [{
+          value: 'seattle-grace',
+          text: 'Seattle Grace Clinic (QA)'
+        }, {
+          value: 'sacred-heart',
+          text: 'Sacred Heart'
+        }],
         recs: [],
         names: {},
         pageSize: 3,
@@ -23,16 +21,34 @@
       }
     },
     created () {
-      getRecommendation(this.clinic.value, this.pageSize, this.pageNumber).then(recs => {
-        this.recs = recs
-      })
-      getNameMappings(this.clinic.value).then(names => {
-        this.names = names
-      })
+      this.loadResults()
+    },
+    watch: {
+      clinic () {
+        this.loadResults()
+      },
+      pageNumber () {
+        this.loadResults()
+      },
+      pageSize () {
+        this.loadResults()
+      }
     },
     computed: {
       patientInfoCols () {
-        return this.names.column ? Object.keys(this.names.column).length : 0
+        return this.names.column ? Object.keys(this.names.column).length : 1
+      }
+    },
+    methods: {
+      loadResults () {
+        getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
+          console.log(recs)
+          this.recs = recs
+        })
+        getNameMappings(this.clinic).then(names => {
+          console.log(names)
+          this.names = names
+        })
       }
     }
   }
@@ -48,15 +64,25 @@
       <b-col cols="auto">
         <b-form-select v-model="pageSize" :options="[3, 10, 20, 30, 50]"></b-form-select>
       </b-col>
-      <b-col cols="3">
+      <b-col cols="5">
         <b-form-select v-model="clinic" :options="clinics"></b-form-select>
       </b-col>
     </b-row>
 
     <b-table-simple responsive class="mt-3">
-      <colgroup><col><col></colgroup>
-      <colgroup><col><col><col></colgroup>
-      <colgroup><col><col></colgroup>
+      <colgroup>
+        <col>
+        <col>
+      </colgroup>
+      <colgroup>
+        <col>
+        <col>
+        <col>
+      </colgroup>
+      <colgroup>
+        <col>
+        <col>
+      </colgroup>
       <b-thead>
         <b-tr>
           <b-th :colspan="patientInfoCols">Patient</b-th>
@@ -72,13 +98,19 @@
       <b-tbody>
         <recommendation-row v-for="rec in recs" :recommendation="rec"/>
       </b-tbody>
-      <b-tfoot>
-        <b-tr>
-          <b-td colspan="7">
-            Showing 1 to 10 of 250 entries
-          </b-td>
-        </b-tr>
-      </b-tfoot>
     </b-table-simple>
+    <b-row>
+      <b-col>
+        Showing {{ (pageNumber - 1) * pageSize + 1 }} to {{ pageNumber * pageSize }} of 250 entries
+      </b-col>
+      <b-col cols="auto">
+        <b-pagination
+          v-model="pageNumber"
+          :total-rows="14"
+          :per-page="pageSize"
+          first-number
+          last-number/>
+      </b-col>
+    </b-row>
   </b-container>
 </template>

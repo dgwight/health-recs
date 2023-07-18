@@ -16,6 +16,9 @@
       },
       su () {
         return !!find(this.recommendation.recommendedProcedures, { name: 'SU' })
+      },
+      attributes () {
+        return Object.keys(this.recommendation.patientAttributes)
       }
     }
   }
@@ -23,9 +26,7 @@
 
 <template>
   <b-tr>
-    <b-td>{{ recommendation.patientAttributes.account_number }}</b-td>
-    <b-td>{{ recommendation.patientAttributes.date_of_birth }}</b-td>
-    <b-td>{{ recommendation.patientAttributes.gender }}</b-td>
+    <b-td v-for="attribute in attributes">{{ recommendation.patientAttributes[attribute] }}</b-td>
     <b-td>{{ recommendation.recDate }}</b-td>
     <b-td>{{ bvn }}</b-td>
     <b-td>{{ su }}</b-td>
