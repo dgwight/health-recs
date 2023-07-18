@@ -67,3 +67,14 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+
+
+
+
+
+# Questions
+- There is one recommendation with 'SCS', should it have a column?
+- Do better looking dropdowns matter?
+- I added a getRecommendationCount for pagination
+- I calculate the attributes based off of the rec.patientAttributes keys, should I pass the name mapings down instead?

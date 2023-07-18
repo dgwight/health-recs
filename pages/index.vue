@@ -36,8 +36,8 @@
       }
     },
     computed: {
-      patientInfoCols () {
-        return this.names.column ? Object.keys(this.names.column).length : 1
+      patientInfoHeader () {
+        return this.names.header ? Object.keys(this.names.header) : []
       },
       paginationText () {
         const lowerValue = (this.pageNumber - 1) * this.pageSize + 1
@@ -46,6 +46,9 @@
       }
     },
     methods: {
+      getColsForHeader (header) {
+        return this.names.header ? Object.keys(this.names.header[header]).length : 1
+      },
       loadResults () {
         getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
           console.log(recs)
@@ -94,14 +97,14 @@
       </colgroup>
       <b-thead>
         <b-tr>
-          <b-th :colspan="patientInfoCols">Patient</b-th>
+          <b-th v-for="header in patientInfoHeader" :colspan="getColsForHeader(header)">{{ header }}</b-th>
           <b-th colspan="3">Recommendations</b-th>
         </b-tr>
         <b-tr>
           <b-th v-for="name in names.column">{{ name }}</b-th>
           <b-th>Rec Date</b-th>
           <b-th>BVN</b-th>
-          <b-th>SU</b-th>
+          <b-th>SIJ</b-th>
         </b-tr>
       </b-thead>
       <b-tbody>
