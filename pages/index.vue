@@ -12,7 +12,7 @@
           text: 'Seattle Grace Clinic (QA)'
         }, {
           value: 'sacred-heart',
-          text: 'Sacred Heart'
+          text: 'Sacred Heart Clinic (QA)'
         }],
         recs: [],
         names: {},
@@ -42,8 +42,11 @@
       paginationText () {
         const lowerValue = (this.pageNumber - 1) * this.pageSize + 1
         const upperWindow = Math.min(this.pageNumber * this.pageSize, this.totalRecs)
-        return `Showing ${lowerValue} to ${upperWindow } of ${this.totalRecs} entries`
-      }
+        return `Showing ${lowerValue} to ${upperWindow} of ${this.totalRecs} entries`
+      },
+      columns () {
+        return this.names.column ? Object.keys(this.names.column) : []
+      },
     },
     methods: {
       getColsForHeader (header) {
@@ -68,9 +71,9 @@
 
 <template>
   <b-container>
-    <h1 class="mt-5">
+    <h2 class="mt-5">
       Procedure Recommendations
-    </h1>
+    </h2>
 
     <b-row class="mt-3">
       <b-col cols="auto">
@@ -108,11 +111,12 @@
         </b-tr>
       </b-thead>
       <b-tbody>
-        <recommendation-row v-for="rec in recs" :recommendation="rec"/>
+        <recommendation-row v-for="rec in recs" :recommendation="rec" :columns="columns"/>
       </b-tbody>
     </b-table-simple>
+    <hr>
     <b-row>
-      <b-col>
+      <b-col style="opacity: 0.5">
         {{ paginationText }}
       </b-col>
       <b-col cols="auto">

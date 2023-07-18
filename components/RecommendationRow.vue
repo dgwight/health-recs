@@ -8,6 +8,11 @@
         type: Object,
         default: null,
         required: true
+      },
+      columns: {
+        type: Array,
+        default: () => [],
+        required: true
       }
     },
     computed: {
@@ -16,9 +21,6 @@
       },
       sij () {
         return !!find(this.recommendation.recommendedProcedures, { name: 'SIJ' })
-      },
-      attributes () {
-        return Object.keys(this.recommendation.patientAttributes)
       }
     }
   }
@@ -26,7 +28,7 @@
 
 <template>
   <b-tr>
-    <b-td v-for="attribute in attributes">{{ recommendation.patientAttributes[attribute] }}</b-td>
+    <b-td v-for="attribute in columns">{{ recommendation.patientAttributes[attribute] }}</b-td>
     <b-td>{{ recommendation.recDate }}</b-td>
     <b-td>
       <b-img v-if="bvn" src="../static/checkmark.svg" width="16" style="color: #d141ab"/>
