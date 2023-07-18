@@ -3,6 +3,11 @@ async function getRecommendation (clinicId, page_size = 3, page_number = 1) {
   return fakeDatabase.filter((o) => o.clinicId === clinicId).slice((page_number - 1) * page_size, page_number * page_size)
 }
 
+async function getRecommendationCount (clinicId) {
+  await new Promise((resolve) => setTimeout(resolve, 250)) // Simulating a DB call
+  return fakeDatabase.filter((o) => o.clinicId === clinicId).length
+}
+
 async function getNameMappings (clinicId) {
   await new Promise((resolve) => setTimeout(resolve, 250)) // Simulating a DB call
   let res = {}
@@ -287,4 +292,4 @@ const fakeDatabase = [
   }
 ]
 
-module.exports = { getRecommendation, getNameMappings }
+module.exports = { getRecommendation, getRecommendationCount, getNameMappings }

@@ -1,6 +1,6 @@
 <script>
   import { first, last } from 'lodash'
-  import { getRecommendation, getNameMappings } from '../api/index'
+  import { getRecommendation, getRecommendationCount, getNameMappings } from '../api/index'
 
   export default {
     name: 'IndexPage',
@@ -17,7 +17,8 @@
         recs: [],
         names: {},
         pageSize: 3,
-        pageNumber: 1
+        pageNumber: 1,
+        totalRecs: 0
       }
     },
     created () {
@@ -37,6 +38,11 @@
     computed: {
       patientInfoCols () {
         return this.names.column ? Object.keys(this.names.column).length : 1
+      },
+      paginationText () {
+        const lowerValue = (this.pageNumber - 1) * this.pageSize + 1
+        const upperWindow = Math.min(this.pageNumber * this.pageSize, this.totalRecs)
+        return `Showing ${lowerValue} to ${upperWindow } of ${this.totalRecs} entries`
       }
     },
     methods: {
@@ -48,6 +54,9 @@
         getNameMappings(this.clinic).then(names => {
           console.log(names)
           this.names = names
+        })
+        getRecommendationCount(this.clinic).then(totalRecs => {
+          this.totalRecs = totalRecs
         })
       }
     }
@@ -101,12 +110,12 @@
     </b-table-simple>
     <b-row>
       <b-col>
-        Showing {{ (pageNumber - 1) * pageSize + 1 }} to {{ pageNumber * pageSize }} of 250 entries
+        {{ paginationText }}
       </b-col>
       <b-col cols="auto">
         <b-pagination
           v-model="pageNumber"
-          :total-rows="14"
+          :total-rows="totalRecs"
           :per-page="pageSize"
           first-number
           last-number/>
