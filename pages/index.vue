@@ -1,5 +1,4 @@
 <script>
-  import { first, last } from 'lodash'
   import { getRecommendation, getRecommendationCount, getNameMappings } from '../api/index'
 
   export default {
@@ -22,23 +21,22 @@
       }
     },
     created () {
-      this.loadResults()
+      this.loadRecommendations()
+      this.loadClinic()
     },
     watch: {
       clinic () {
-        this.loadResults()
+        this.loadRecommendations()
+        this.loadClinic()
       },
       pageNumber () {
-        this.loadResults()
+        this.loadRecommendations()
       },
       pageSize () {
-        this.loadResults()
+        this.loadRecommendations()
       }
     },
     computed: {
-      patientInfoHeader () {
-        return this.names.header ? Object.keys(this.names.header) : []
-      },
       paginationText () {
         const lowerValue = (this.pageNumber - 1) * this.pageSize + 1
         const upperWindow = Math.min(this.pageNumber * this.pageSize, this.totalRecs)
@@ -46,19 +44,16 @@
       },
       columns () {
         return this.names.column ? Object.keys(this.names.column) : []
-      },
+      }
     },
     methods: {
-      getColsForHeader (header) {
-        return this.names.header ? Object.keys(this.names.header[header]).length : 1
-      },
-      loadResults () {
+      loadRecommendations () {
         getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
-          console.log(recs)
           this.recs = recs
         })
+      },
+      loadClinic () {
         getNameMappings(this.clinic).then(names => {
-          console.log(names)
           this.names = names
         })
         getRecommendationCount(this.clinic).then(totalRecs => {
@@ -77,39 +72,15 @@
 
     <b-row class="mt-3">
       <b-col cols="auto">
-        <b-form-select v-model="pageSize" :options="[3, 10, 20, 30, 50]"></b-form-select>
+        <b-form-select v-model="pageSize" :options="[3, 10, 20, 30, 50]"/>
       </b-col>
       <b-col cols="5">
-        <b-form-select v-model="clinic" :options="clinics"></b-form-select>
+        <b-form-select v-model="clinic" :options="clinics"/>
       </b-col>
     </b-row>
 
     <b-table-simple responsive class="mt-3">
-      <colgroup>
-        <col>
-        <col>
-      </colgroup>
-      <colgroup>
-        <col>
-        <col>
-        <col>
-      </colgroup>
-      <colgroup>
-        <col>
-        <col>
-      </colgroup>
-      <b-thead>
-        <b-tr>
-          <b-th v-for="header in patientInfoHeader" :colspan="getColsForHeader(header)">{{ header }}</b-th>
-          <b-th colspan="3">Recommendations</b-th>
-        </b-tr>
-        <b-tr>
-          <b-th v-for="name in names.column">{{ name }}</b-th>
-          <b-th>Rec Date</b-th>
-          <b-th>BVN</b-th>
-          <b-th>SIJ</b-th>
-        </b-tr>
-      </b-thead>
+      <table-header v-if="names" :names="names"/>
       <b-tbody>
         <recommendation-row v-for="rec in recs" :recommendation="rec" :columns="columns"/>
       </b-tbody>

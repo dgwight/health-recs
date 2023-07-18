@@ -28,10 +28,14 @@
 
 <template>
   <b-tr>
-    <b-td v-for="attribute in columns">{{ recommendation.patientAttributes[attribute] }}</b-td>
-    <b-td>{{ recommendation.recDate }}</b-td>
+    <b-td v-for="attribute in columns">
+      {{ recommendation.patientAttributes[attribute] }}
+    </b-td>
     <b-td>
-      <b-img v-if="bvn" src="../static/checkmark.svg" width="16" style="color: #d141ab"/>
+      {{ recommendation.recDate }}
+    </b-td>
+    <b-td>
+      <b-img v-if="bvn" src="../static/checkmark.svg" width="16"/>
     </b-td>
     <b-td>
       <b-img v-if="sij" src="../static/checkmark.svg" width="16"/>
