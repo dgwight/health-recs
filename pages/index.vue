@@ -1,10 +1,11 @@
 <script>
-  import { getRecommendation, getRecommendationCount, getNameMappings } from '../api/index'
+  import api from '../api/index'
 
   export default {
     name: 'IndexPage',
     data () {
       return {
+        loaded: false,
         clinic: 'seattle-grace',
         clinics: [{
           value: 'seattle-grace',
@@ -21,19 +22,25 @@
       }
     },
     created () {
-      this.loadRecommendations()
-      this.loadClinic()
+      Promise.all([
+        this.getRecommendations(),
+        this.getNameMappings(),
+        this.getRecommendationCount()
+      ]).then(() => {
+        this.loaded = true
+      })
     },
     watch: {
       clinic () {
-        this.loadRecommendations()
-        this.loadClinic()
+        this.getRecommendations()
+        this.getNameMappings()
+        this.getRecommendationCount()
       },
       pageNumber () {
-        this.loadRecommendations()
+        this.getRecommendations()
       },
       pageSize () {
-        this.loadRecommendations()
+        this.getRecommendations()
       }
     },
     computed: {
@@ -47,16 +54,18 @@
       }
     },
     methods: {
-      loadRecommendations () {
-        getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
+      getRecommendations () {
+        return api.getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
           this.recs = recs
         })
       },
-      loadClinic () {
-        getNameMappings(this.clinic).then(names => {
+      getNameMappings () {
+        return api.getNameMappings(this.clinic).then(names => {
           this.names = names
         })
-        getRecommendationCount(this.clinic).then(totalRecs => {
+      },
+      getRecommendationCount () {
+        return api.getRecommendationCount(this.clinic).then(totalRecs => {
           this.totalRecs = totalRecs
         })
       }
@@ -65,7 +74,7 @@
 </script>
 
 <template>
-  <b-container>
+  <b-container v-if="loaded">
     <h2 class="mt-5">
       Procedure Recommendations
     </h2>
