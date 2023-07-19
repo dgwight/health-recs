@@ -22,19 +22,12 @@
       }
     },
     created () {
-      Promise.all([
-        this.getRecommendations(),
-        this.getNameMappings(),
-        this.getRecommendationCount()
-      ]).then(() => {
-        this.loaded = true
-      })
+      this.loadAll()
     },
     watch: {
       clinic () {
-        this.getRecommendations()
-        this.getNameMappings()
-        this.getRecommendationCount()
+        this.loaded = false
+        this.loadAll()
       },
       pageNumber () {
         this.getRecommendations()
@@ -44,6 +37,15 @@
       }
     },
     methods: {
+      loadAll () {
+        Promise.all([
+          this.getRecommendations(),
+          this.getNameMappings(),
+          this.getRecommendationCount()
+        ]).then(() => {
+          this.loaded = true
+        })
+      },
       getRecommendations () {
         return api.getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
           this.recs = recs
@@ -64,7 +66,7 @@
 </script>
 
 <template>
-  <b-container v-if="loaded">
+  <b-container>
     <h2 class="mt-5">
       Procedure Recommendations
     </h2>
@@ -78,16 +80,18 @@
       </b-col>
     </b-row>
 
-    <b-table-simple responsive class="mt-3 mb-0">
-      <table-header v-if="names" :names="names"/>
-      <b-tbody>
-        <recommendation-row
-          v-for="(rec, index) in recs"
-          :key="index"
-          :recommendation="rec"
-          :names="names"/>
-      </b-tbody>
-    </b-table-simple>
-    <table-footer :total-recs="totalRecs" :page-size="pageSize" :page-number.sync="pageNumber"/>
+    <div v-if="loaded">
+      <b-table-simple responsive class="mt-3 mb-0">
+        <table-header v-if="names" :names="names"/>
+        <b-tbody>
+          <recommendation-row
+            v-for="(rec, index) in recs"
+            :key="index"
+            :recommendation="rec"
+            :names="names"/>
+        </b-tbody>
+      </b-table-simple>
+      <table-footer :total-recs="totalRecs" :page-size="pageSize" :page-number.sync="pageNumber"/>
+    </div>
   </b-container>
 </template>
