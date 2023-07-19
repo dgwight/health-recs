@@ -67,9 +67,9 @@
 
 <template>
   <b-container>
-    <h2 class="mt-5">
+    <h4 class="mt-5">
       Procedure Recommendations
-    </h2>
+    </h4>
 
     <b-row class="mt-3">
       <b-col cols="auto">
