@@ -31,7 +31,7 @@
 
 <template>
   <b-tr>
-    <b-td v-for="attribute in columns">
+    <b-td v-for="attribute in columns" :key="attribute">
       {{ recommendation.patientAttributes[attribute] }}
     </b-td>
     <b-td>

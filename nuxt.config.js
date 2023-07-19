@@ -16,7 +16,8 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  components: true,
   modules: [
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
   ]
 }

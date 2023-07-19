@@ -81,7 +81,11 @@
     <b-table-simple responsive class="mt-3 mb-0">
       <table-header v-if="names" :names="names"/>
       <b-tbody>
-        <recommendation-row v-for="rec in recs" :recommendation="rec" :names="names"/>
+        <recommendation-row
+          v-for="(rec, index) in recs"
+          :key="index"
+          :recommendation="rec"
+          :names="names"/>
       </b-tbody>
     </b-table-simple>
     <table-footer :total-recs="totalRecs" :page-size="pageSize" :page-number.sync="pageNumber"/>
