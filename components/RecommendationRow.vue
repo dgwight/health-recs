@@ -9,18 +9,21 @@
         default: null,
         required: true
       },
-      columns: {
-        type: Array,
-        default: () => [],
+      names: {
+        type: Object,
+        default: null,
         required: true
       }
     },
     computed: {
-      bvn () {
+      hasBvn () {
         return !!find(this.recommendation.recommendedProcedures, { name: 'BVN' })
       },
-      sij () {
+      hasSij () {
         return !!find(this.recommendation.recommendedProcedures, { name: 'SIJ' })
+      },
+      columns () {
+        return this.names.column ? Object.keys(this.names.column) : []
       }
     }
   }
@@ -35,10 +38,10 @@
       {{ recommendation.recDate }}
     </b-td>
     <b-td>
-      <b-img v-if="bvn" src="../static/checkmark.svg" width="16"/>
+      <b-img v-if="hasBvn" src="../static/checkmark.svg" width="16"/>
     </b-td>
     <b-td>
-      <b-img v-if="sij" src="../static/checkmark.svg" width="16"/>
+      <b-img v-if="hasSij" src="../static/checkmark.svg" width="16"/>
     </b-td>
   </b-tr>
 </template>

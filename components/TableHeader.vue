@@ -24,7 +24,9 @@
 <template>
   <b-thead>
     <b-tr>
-      <b-th v-for="header in patientInfoHeader" :colspan="getColsForHeader(header)">{{ header }}</b-th>
+      <b-th v-for="header in patientInfoHeader" :colspan="getColsForHeader(header)">
+        {{ header }}
+      </b-th>
       <b-th colspan="3">Recommendations</b-th>
     </b-tr>
     <b-tr>

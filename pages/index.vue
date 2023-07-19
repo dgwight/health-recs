@@ -43,16 +43,6 @@
         this.getRecommendations()
       }
     },
-    computed: {
-      paginationText () {
-        const lowerValue = (this.pageNumber - 1) * this.pageSize + 1
-        const upperWindow = Math.min(this.pageNumber * this.pageSize, this.totalRecs)
-        return `Showing ${lowerValue} to ${upperWindow} of ${this.totalRecs} entries`
-      },
-      columns () {
-        return this.names.column ? Object.keys(this.names.column) : []
-      }
-    },
     methods: {
       getRecommendations () {
         return api.getRecommendation(this.clinic, this.pageSize, this.pageNumber).then(recs => {
@@ -88,25 +78,12 @@
       </b-col>
     </b-row>
 
-    <b-table-simple responsive class="mt-3">
+    <b-table-simple responsive class="mt-3 mb-0">
       <table-header v-if="names" :names="names"/>
       <b-tbody>
-        <recommendation-row v-for="rec in recs" :recommendation="rec" :columns="columns"/>
+        <recommendation-row v-for="rec in recs" :recommendation="rec" :names="names"/>
       </b-tbody>
     </b-table-simple>
-    <hr>
-    <b-row>
-      <b-col style="opacity: 0.5">
-        {{ paginationText }}
-      </b-col>
-      <b-col cols="auto">
-        <b-pagination
-          v-model="pageNumber"
-          :total-rows="totalRecs"
-          :per-page="pageSize"
-          first-number
-          last-number/>
-      </b-col>
-    </b-row>
+    <table-footer :total-recs="totalRecs" :page-size="pageSize" :page-number.sync="pageNumber"/>
   </b-container>
 </template>
